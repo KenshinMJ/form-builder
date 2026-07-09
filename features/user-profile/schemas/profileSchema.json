@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": { "type": "string", "title": "名前" },
+    "age": { "type": "integer", "title": "年齢" },
+    "favoriteSake": {
+      "type": "string",
+      "title": "好きな日本酒のタイプ",
+      "enum": ["純米大吟醸", "純米吟醸", "本醸造", "特定名称酒以外"]
+    },
+    "managerId": { "type": "string", "title": "上長" },
+    "newsletter": { "type": "boolean", "title": "ニュースレターを受け取る" }
+  }
+}

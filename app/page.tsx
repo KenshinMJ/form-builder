@@ -10,6 +10,15 @@ export default function Home() {
           <Link href="/profile">
             <Button>プロファイル画面へ</Button>
           </Link>
+          <Link href="/management">
+            <Button>管理画面へ</Button>
+          </Link>
+          <Link href="/management/applicationTypes">
+            <Button>申請種別管理へ</Button>
+          </Link>
+          <Link href="/counter">
+            <Button>カウンタ画面へ</Button>
+          </Link>
         </div>
       </main>
     </div>

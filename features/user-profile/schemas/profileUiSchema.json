@@ -1,6 +1,0 @@
-{
-  "ui:order": ["name", "age", "favoriteSake", "managerId", "newsletter"],
-  "managerId": {
-    "ui:widget": "EmployeePickerWidget"
-  }
-}

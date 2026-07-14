@@ -1,0 +1,3 @@
+# Bunのみを許可し、他のマネージャー（npm/yarn/pnpm）を禁止する
+[install]
+strict = true

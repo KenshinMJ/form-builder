@@ -21,3 +21,8 @@ const applicationsTable = new sst.aws.Dynamo("Applications", {
     },
   },
 });
+
+const employeesTable = new sst.aws.Dynamo("Employees", {
+  fields: { id: "string" },
+  primaryIndex: { hashKey: "id" },
+});

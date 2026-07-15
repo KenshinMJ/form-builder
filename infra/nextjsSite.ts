@@ -1,7 +1,7 @@
 // import { applicationTypesTable, applicationsTable } from "./storage";
 
 export const site = new sst.aws.Nextjs("Site", {
-  link: [applicationTypesTable, applicationsTable],
+  link: [applicationTypesTable, applicationsTable, employeesTable],
   environment: {
     NEXT_PUBLIC_FORMIO_URL:
       process.env.NEXT_PUBLIC_FORMIO_URL || "https://examples.form.io",
@@ -10,5 +10,6 @@ export const site = new sst.aws.Nextjs("Site", {
     AWS_REGION: aws.getRegionOutput().region,
     APPLICATION_TYPES_TABLE_NAME: applicationTypesTable.name,
     APPLICATIONS_TABLE_NAME: applicationsTable.name,
+    EMPLOYEE_TABLE_NAME: employeesTable.name,
   },
 });

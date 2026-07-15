@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
-import * as React from "react";
 
 export async function GET(
   _req: Request,

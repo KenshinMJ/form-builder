@@ -19,8 +19,6 @@ export const applicationTypeRepository = {
       TableName: APPLICATION_TYPES_TABLE_NAME,
     });
     const result = await dynamoDb.send(command);
-    const record = result.Items![0];
-    const x = record[""];
     return (result.Items as unknown as ApplicationType[]) || [];
   },
 
@@ -38,7 +36,7 @@ export const applicationTypeRepository = {
     const item = { ...applicationType, updatedAt: now };
     if (!item.id) {
       item.id = uuidv4();
-      // TODO: createdAtを設定
+      (item as any).createdAt = now;
     }
 
     const command = new PutCommand({

@@ -50,9 +50,17 @@ const APPLICATION_TABLE_DEF: CreateTableCommandInput = {
   BillingMode: "PAY_PER_REQUEST",
 };
 
+const EMPLOYEE_TABLE_DEF: CreateTableCommandInput = {
+  TableName: "Employees",
+  AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
+  KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
+  BillingMode: "PAY_PER_REQUEST",
+};
+
 const TABLE_DEFINITIONS: CreateTableCommandInput[] = [
   APPLICATION_TYPE_TABLE_DEF,
   APPLICATION_TABLE_DEF,
+  EMPLOYEE_TABLE_DEF,
 ];
 
 async function tableExists(tableName: string): Promise<boolean> {

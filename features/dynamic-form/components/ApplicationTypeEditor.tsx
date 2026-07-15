@@ -3,9 +3,9 @@
 import { Button, Form } from "react-bootstrap";
 import FormEditor from "./FormEditor";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApplicationType } from "../hooks/useApplicationTypes";
-import { useFormSchema } from "../hooks/useFormSchema";
+import { FormDefinition } from "../types";
 
 type ApplicationTypeEditorProps = {
   formId: string | null;
@@ -14,23 +14,37 @@ type ApplicationTypeEditorProps = {
 export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
   const isNew = !formId;
 
-  const [inputFormId, setInputFormId] = useState<string>(formId ?? "new");
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-
   const { applicationType, loading, error, submit, isSaving } =
     useApplicationType(formId || "");
-  const { definition } = useFormSchema(formId || "");
 
   if (error)
     return <p className="text-destructive">スキーマの取得に失敗しました</p>;
   if (loading || !applicationType) return <p>読み込み中...</p>;
 
+  const [inputFormId, setInputFormId] = useState<string>(formId ?? "new");
+  const [title, setTitle] = useState<string>(applicationType.name);
+  const [description, setDescription] = useState<string>(
+    applicationType.description,
+  );
+  const [definition, setDefinition] = useState<FormDefinition | null>(
+    applicationType.formDefinition ?? null,
+  );
+
+  // 社員データが取得できたら名前をセットする
+  useEffect(() => {
+    if (applicationType) {
+      setTitle(applicationType.name);
+      setDescription(applicationType.description);
+      setDefinition(applicationType.formDefinition ?? null);
+    }
+  }, [applicationType]);
+
   const handleSave = async () => {
     await submit({
       id: inputFormId,
       name: title,
-      description: description,
+      description,
+      formDefinition: definition ?? undefined,
     });
   };
 
@@ -73,7 +87,12 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
             />
           </Form.Group>
         </div>
-        <FormEditor definition={definition} loading={false} error={null} />
+        <FormEditor
+          definition={definition}
+          loading={false}
+          error={null}
+          onChange={(e) => setDefinition(e)}
+        />
       </Form>
     </main>
   );

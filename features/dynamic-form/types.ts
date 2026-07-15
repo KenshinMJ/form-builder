@@ -1,9 +1,4 @@
-import type { RJSFSchema, UiSchema } from "@rjsf/utils";
-
-export type FormDefinition = {
-  schema: RJSFSchema;
-  uiSchema: UiSchema;
-};
+export type FormDefinition = {};
 
 export type ApplicationType = {
   id: string;

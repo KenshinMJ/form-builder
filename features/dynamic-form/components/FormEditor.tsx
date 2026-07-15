@@ -34,18 +34,21 @@ type FormEditorProps = {
   definition: FormDefinition | null;
   loading: boolean;
   error: Error | null;
+  onChange: (v: any) => void;
 };
 
 export default function FormEditor({
   definition,
   loading,
   error,
+  onChange,
 }: FormEditorProps) {
-  const schemaRef = useRef<FormDefinition | null>(INITIAL_FORM_SCHEMA);
+  // const schemaRef = useRef<FormDefinition | null>(INITIAL_FORM_SCHEMA);
   const containerRef = useRef<HTMLDivElement>(null);
-  const onChangeRef = useRef((schema: FormDefinition) => {
-    schemaRef.current = schema;
-  });
+  // const onChangeRef = useRef((schema: FormDefinition) => {
+  //   // schemaRef.current = schema;
+  //   onChange(schema);
+  // });
 
   const [isClient, setIsClient] = useState(false);
 
@@ -69,7 +72,8 @@ export default function FormEditor({
         }
         builderInstance = builder;
         builder.on("change", (schema: FormDefinition) => {
-          onChangeRef.current?.(schema);
+          // onChangeRef.current?.(schema);
+          onChange(schema);
         });
       });
     }

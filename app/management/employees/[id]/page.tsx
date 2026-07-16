@@ -16,5 +16,9 @@ export default async function EmployeeEditPage({
     notFound();
   }
 
-  return <EmployeeEditor empId={id} initialEmployee={employee} />;
+  return (
+    <main className="p-8">
+      <EmployeeEditor initialEmployee={employee} />
+    </main>
+  );
 }

@@ -1,31 +1,47 @@
 "use client";
 
-import { Table } from "lucide-react";
-import { useApplicationTypes } from "../hooks/useApplicationTypes";
+import { Table, Button } from "react-bootstrap";
 import Link from "next/link";
-import { Button } from "react-bootstrap";
+import { ApplicationType } from "@/types/application";
 
-export function ApplicationTypeList() {
-  const { applicationTypes, error, loading } = useApplicationTypes();
+type ApplicationTypeListProps = {
+  applicationTypes: ApplicationType[];
+};
 
+export function ApplicationTypeList({
+  applicationTypes,
+}: ApplicationTypeListProps) {
   return (
-    <div>
+    <div className="py-3">
       <h1>申請種別一覧</h1>
-      <ol>
-        {applicationTypes?.map((form) => (
-          <li key={form.id}>
-            <a
-              href={`/management/applicationTypes/${form.id}`}
-              className="flex items-center gap-2"
-            >
-              <Table className="h-4 w-4" />
-              {form.name}
-            </a>
-          </li>
-        ))}
-      </ol>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>名前</th>
+            <th>説明</th>
+            <th>アクション</th>
+          </tr>
+        </thead>
+        <tbody>
+          {applicationTypes.map((type) => (
+            <tr key={type.id}>
+              <td>{type.id}</td>
+              <td>{type.name}</td>
+              <td>{type.description}</td>
+              <td>
+                <Link href={`/management/applicationTypes/${type.id}`}>
+                  <Button variant="primary" size="sm">
+                    編集
+                  </Button>
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
       <Link href="/management/applicationTypes/register">
-        <Button variant="primary">申請種別を追加</Button>
+        <Button variant="primary">新規登録</Button>
       </Link>
     </div>
   );

@@ -1,23 +1,34 @@
 "use client";
 
 import { Button, Form } from "react-bootstrap";
-import FormEditor from "./FormEditor";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useApplicationType } from "../hooks/useApplicationTypes";
 import { FormDefinition } from "../types";
+import { ApplicationType } from "@/types/application";
+import dynamic from "next/dynamic";
+
+const FormEditor = dynamic(() => import("./FormEditor"), {
+  ssr: false,
+});
 
 type ApplicationTypeEditorProps = {
-  formId: string | null;
+  applicationType?: ApplicationType;
 };
 
-export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
-  const isNew = !formId;
+export function ApplicationTypeEditor({
+  applicationType: initialApplicationType,
+}: ApplicationTypeEditorProps) {
+  const applicationTypeId = initialApplicationType?.id;
+  const isNew = !applicationTypeId;
 
-  const { applicationType, loading, error, submit, isSaving } =
-    useApplicationType(formId || "");
+  const { applicationType, submit, isSaving } = useApplicationType(
+    initialApplicationType,
+  );
 
-  const [inputFormId, setInputFormId] = useState<string>(formId ?? "new");
+  const [inputFormId, setInputFormId] = useState<string>(
+    applicationTypeId ?? "new",
+  );
   const [title, setTitle] = useState<string>(applicationType?.name ?? "");
   const [description, setDescription] = useState<string>(
     applicationType?.description ?? "",
@@ -26,7 +37,7 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
     applicationType?.formDefinition ?? null,
   );
 
-  // 社員データが取得できたら名前をセットする
+  // データが取得できたらセットする
   useEffect(() => {
     if (applicationType) {
       setTitle(applicationType.name);
@@ -40,7 +51,7 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
       id: inputFormId,
       name: title,
       description,
-      formDefinition: definition ?? {},
+      formDefinition: definition ?? undefined,
     });
   };
 
@@ -51,11 +62,17 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
         <Link href="/management/applicationTypes">
           <Button variant="light">Cancel</Button>
         </Link>
-        <Button as="input" type="submit" onClick={handleSave} value="保存" />
+        <Button
+          as="input"
+          type="submit"
+          onClick={handleSave}
+          value="保存"
+          disabled={isSaving}
+        />
       </div>
       <Form>
         <div>
-          <Form.Group className="mb-3" controlId="title">
+          <Form.Group className="mb-3" controlId="applicationTypeId">
             <Form.Label>ID</Form.Label>
             <Form.Control
               type="text"
@@ -84,9 +101,8 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
           </Form.Group>
         </div>
         <FormEditor
+          id={inputFormId}
           definition={definition}
-          loading={loading}
-          error={error}
           onChange={(e) => setDefinition(e)}
         />
       </Form>

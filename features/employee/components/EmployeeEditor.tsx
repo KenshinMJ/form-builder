@@ -7,14 +7,11 @@ import { Button, Form } from "react-bootstrap";
 import { Employee } from "../types";
 
 type EmployeeEditorProps = {
-  empId: string | null;
   initialEmployee?: Employee;
 };
 
-export function EmployeeEditor({
-  empId,
-  initialEmployee,
-}: EmployeeEditorProps) {
+export function EmployeeEditor({ initialEmployee }: EmployeeEditorProps) {
+  const empId = initialEmployee?.id;
   const isNew = !empId;
 
   const { submit, isSaving } = useEmployee(initialEmployee);
@@ -22,12 +19,11 @@ export function EmployeeEditor({
   const [id, setId] = useState<string>(empId ?? "");
   const [name, setName] = useState<string>(initialEmployee?.name ?? "");
 
-  const handleSave = async () => {
+  const handleSave = async () =>
     await submit({
       id,
       name,
     });
-  };
 
   return (
     <main className="py-3">

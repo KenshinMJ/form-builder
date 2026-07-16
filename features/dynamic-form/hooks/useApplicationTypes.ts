@@ -1,45 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import {
-  fetchApplicationType,
-  fetchApplicationTypes,
-  saveApplicationType,
-} from "../api/schemaApi";
-import type { ApplicationType } from "../types";
+import { useCallback, useState } from "react";
+import { saveApplicationType } from "../api/schemaApi";
+import { ApplicationType } from "@/types/application";
 
-export function useApplicationTypes() {
-  const [applicationTypes, setApplicationTypes] = useState<ApplicationType[]>(
-    [],
-  );
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    fetchApplicationTypes().then(setApplicationTypes).catch(setError);
-  }, []);
-
-  return { applicationTypes, error, loading: !applicationTypes && !error };
-}
-
-export function useApplicationType(id: string | null) {
+export function useApplicationType(initialApplicationType?: ApplicationType) {
   const [applicationType, setApplicationType] =
-    useState<ApplicationType | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+    useState<ApplicationType | null>(initialApplicationType ?? null);
   const [isSaving, setSaving] = useState(false);
-
-  if (id) {
-    useEffect(() => {
-      fetchApplicationType(id).then(setApplicationType).catch(setError);
-    }, [id]);
-  }
 
   const submit = useCallback(async (data: ApplicationType) => {
     setSaving(true);
     try {
-      // サーバーに送信 → 再取得（最新の正としてサーバー値を使う）
-      await saveApplicationType(data);
-      const latest = await fetchApplicationType(data.id);
-      setApplicationType(latest);
+      // サーバーに送信 → 戻り値を最新の正として使う
+      const updated = await saveApplicationType(data);
+      setApplicationType(updated);
     } finally {
       setSaving(false);
     }
@@ -47,8 +22,6 @@ export function useApplicationType(id: string | null) {
 
   return {
     applicationType,
-    error,
-    loading: !!id && !applicationType,
     submit,
     isSaving,
   };

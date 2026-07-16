@@ -31,59 +31,36 @@ const INITIAL_FORM_SCHEMA = {
 } as const satisfies FormIoSchema;
 
 type FormEditorProps = {
+  id: string;
   definition: FormDefinition | null;
-  loading: boolean;
-  error: Error | null;
   onChange: (v: any) => void;
 };
 
 export default function FormEditor({
+  id,
   definition,
-  loading,
-  error,
   onChange,
 }: FormEditorProps) {
-  console.info(`### rendered!!!!!!!!`);
-
-  // const schemaRef = useRef<FormDefinition | null>(INITIAL_FORM_SCHEMA);
   const containerRef = useRef<HTMLDivElement>(null);
-  // const onChangeRef = useRef((schema: FormDefinition) => {
-  //   // schemaRef.current = schema;
-  //   onChange(schema);
-  // });
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   useEffect(() => {
     let destroyed = false;
     let builderInstance: Formio.Builder | null = null;
 
-    // クライアントサイドかつ、(新規作成時(loading=false かつ definition=null) または データ取得完了時(!loading かつ definition!=null)) に初期化する
-    const shouldInitialize = isClient && !loading && !!definition;
-
-    console.info(`### shouldInitialize: ${shouldInitialize}`);
-    console.info(`### loading: ${loading}`);
-    console.info(`### definition: ${definition}`);
-    if (shouldInitialize) {
-      Formio.builder(
-        containerRef.current,
-        definition ?? INITIAL_FORM_SCHEMA,
-        options,
-      ).then((builder: Formio.Builder) => {
-        if (destroyed) {
-          builder.destroy(true);
-          return;
-        }
-        builderInstance = builder;
-        builder.on("change", (schema: FormDefinition) => {
-          onChange(schema);
-        });
+    Formio.builder(
+      containerRef.current,
+      definition ?? INITIAL_FORM_SCHEMA,
+      options,
+    ).then((builder: Formio.Builder) => {
+      if (destroyed) {
+        builder.destroy(true);
+        return;
+      }
+      builderInstance = builder;
+      builder.on("change", (schema: FormDefinition) => {
+        onChange(schema);
       });
-    }
+    });
 
     return () => {
       destroyed = true;
@@ -91,7 +68,7 @@ export default function FormEditor({
         builderInstance.destroy(true);
       }
     };
-  }, [isClient, loading, definition]); // loadingが変わったタイミングでも再評価する
+  }, [id]);
 
   return <div ref={containerRef} />;
 }

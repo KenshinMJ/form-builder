@@ -21,16 +21,9 @@ export function useApplicationTypes() {
   return { applicationTypes, error, loading: !applicationTypes && !error };
 }
 
-const defaultApplicationType = {
-  id: "",
-  name: "",
-  description: "",
-} satisfies ApplicationType;
-
 export function useApplicationType(id: string | null) {
-  const [applicationType, setApplicationType] = useState<ApplicationType>(
-    defaultApplicationType,
-  );
+  const [applicationType, setApplicationType] =
+    useState<ApplicationType | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isSaving, setSaving] = useState(false);
 
@@ -55,7 +48,7 @@ export function useApplicationType(id: string | null) {
   return {
     applicationType,
     error,
-    loading: !applicationType && !error,
+    loading: !!id && !applicationType,
     submit,
     isSaving,
   };

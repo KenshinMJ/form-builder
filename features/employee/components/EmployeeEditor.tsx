@@ -1,28 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useEmployee } from "../hooks/useEmployees";
 import Link from "next/link";
 import { Button, Form } from "react-bootstrap";
+import { Employee } from "../types";
 
 type EmployeeEditorProps = {
   empId: string | null;
+  initialEmployee?: Employee;
 };
 
-export function EmployeeEditor({ empId }: EmployeeEditorProps) {
+export function EmployeeEditor({
+  empId,
+  initialEmployee,
+}: EmployeeEditorProps) {
   const isNew = !empId;
 
-  const { employee, submit, isSaving } = useEmployee(empId);
+  const { submit, isSaving } = useEmployee(initialEmployee);
 
   const [id, setId] = useState<string>(empId ?? "");
-  const [name, setName] = useState<string>(employee?.name ?? "");
-
-  // 社員データが取得できたら名前をセットする
-  useEffect(() => {
-    if (employee) {
-      setName(employee.name);
-    }
-  }, [employee]);
+  const [name, setName] = useState<string>(initialEmployee?.name ?? "");
 
   const handleSave = async () => {
     await submit({

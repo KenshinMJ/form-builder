@@ -1,12 +1,14 @@
 "use client";
 
 import { Button, Table } from "react-bootstrap";
-import { useEmployees } from "../hooks/useEmployees";
 import Link from "next/link";
+import { Employee } from "../types";
 
-export function EmployeeList() {
-  const { employees } = useEmployees();
+type EmployeeListProps = {
+  initialEmployees: Employee[];
+};
 
+export function EmployeeList({ initialEmployees }: EmployeeListProps) {
   return (
     <div>
       <h1>社員一覧</h1>
@@ -18,15 +20,15 @@ export function EmployeeList() {
           </tr>
         </thead>
         <tbody>
-          {employees.map((emp) => (
+          {initialEmployees.map((emp) => (
             <tr key={emp.id}>
               <td>
-                <a
+                <Link
                   href={`/management/employees/${emp.id}`}
                   className="flex items-center gap-2"
                 >
                   {emp.id}
-                </a>
+                </Link>
               </td>
               <td>{emp.name}</td>
             </tr>

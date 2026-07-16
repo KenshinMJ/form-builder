@@ -17,17 +17,13 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
   const { applicationType, loading, error, submit, isSaving } =
     useApplicationType(formId || "");
 
-  if (error)
-    return <p className="text-destructive">スキーマの取得に失敗しました</p>;
-  if (loading || !applicationType) return <p>読み込み中...</p>;
-
   const [inputFormId, setInputFormId] = useState<string>(formId ?? "new");
-  const [title, setTitle] = useState<string>(applicationType.name);
+  const [title, setTitle] = useState<string>(applicationType?.name ?? "");
   const [description, setDescription] = useState<string>(
-    applicationType.description,
+    applicationType?.description ?? "",
   );
   const [definition, setDefinition] = useState<FormDefinition | null>(
-    applicationType.formDefinition ?? null,
+    applicationType?.formDefinition ?? null,
   );
 
   // 社員データが取得できたら名前をセットする
@@ -44,7 +40,7 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
       id: inputFormId,
       name: title,
       description,
-      formDefinition: definition ?? undefined,
+      formDefinition: definition ?? {},
     });
   };
 
@@ -89,8 +85,8 @@ export function ApplicationTypeEditor({ formId }: ApplicationTypeEditorProps) {
         </div>
         <FormEditor
           definition={definition}
-          loading={false}
-          error={null}
+          loading={loading}
+          error={error}
           onChange={(e) => setDefinition(e)}
         />
       </Form>

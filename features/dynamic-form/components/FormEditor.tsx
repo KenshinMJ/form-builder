@@ -43,6 +43,8 @@ export default function FormEditor({
   error,
   onChange,
 }: FormEditorProps) {
+  console.info(`### rendered!!!!!!!!`);
+
   // const schemaRef = useRef<FormDefinition | null>(INITIAL_FORM_SCHEMA);
   const containerRef = useRef<HTMLDivElement>(null);
   // const onChangeRef = useRef((schema: FormDefinition) => {
@@ -60,7 +62,13 @@ export default function FormEditor({
     let destroyed = false;
     let builderInstance: Formio.Builder | null = null;
 
-    if (isClient) {
+    // クライアントサイドかつ、(新規作成時(loading=false かつ definition=null) または データ取得完了時(!loading かつ definition!=null)) に初期化する
+    const shouldInitialize = isClient && !loading && !!definition;
+
+    console.info(`### shouldInitialize: ${shouldInitialize}`);
+    console.info(`### loading: ${loading}`);
+    console.info(`### definition: ${definition}`);
+    if (shouldInitialize) {
       Formio.builder(
         containerRef.current,
         definition ?? INITIAL_FORM_SCHEMA,
@@ -72,7 +80,6 @@ export default function FormEditor({
         }
         builderInstance = builder;
         builder.on("change", (schema: FormDefinition) => {
-          // onChangeRef.current?.(schema);
           onChange(schema);
         });
       });
@@ -84,7 +91,7 @@ export default function FormEditor({
         builderInstance.destroy(true);
       }
     };
-  }, [isClient]);
+  }, [isClient, loading, definition]); // loadingが変わったタイミングでも再評価する
 
   return <div ref={containerRef} />;
 }

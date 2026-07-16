@@ -37,7 +37,7 @@ export function EmployeeCombobox({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger>
         <Button
           variant="outline"
           role="combobox"

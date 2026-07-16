@@ -1,4 +1,6 @@
+import { employeeRepository } from "@/lib/employee-repository";
 import { EmployeeEditor } from "@/features/employee/components/EmployeeEditor";
+import { notFound } from "next/navigation";
 
 export default async function EmployeeEditPage({
   params,
@@ -8,6 +10,11 @@ export default async function EmployeeEditPage({
   }>;
 }) {
   const { id } = await params;
+  const employee = await employeeRepository.getById(id);
 
-  return <EmployeeEditor empId={id} />;
+  if (!employee) {
+    notFound();
+  }
+
+  return <EmployeeEditor empId={id} initialEmployee={employee} />;
 }

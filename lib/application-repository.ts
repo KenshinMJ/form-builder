@@ -1,5 +1,4 @@
 import { dynamoDb } from "./dynamodb";
-import { ApplicationType, Application } from "../types/application";
 import { v4 as uuidv4 } from "uuid";
 import {
   DeleteCommand,
@@ -7,6 +6,8 @@ import {
   PutCommand,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
+import { ApplicationType } from "@/features/dynamic-form/types";
+import { Application } from "@/features/application/types";
 
 const APPLICATION_TYPES_TABLE_NAME =
   process.env.APPLICATION_TYPES_TABLE_NAME || "ApplicationTypes";
@@ -57,6 +58,7 @@ export const applicationTypeRepository = {
   },
 };
 
+// TODO application-repository.ts に分ける
 export const applicationRepository = {
   async getAll(): Promise<Application[]> {
     const command = new ScanCommand({

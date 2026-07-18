@@ -15,6 +15,7 @@ export function useApplicationType(initialApplicationType?: ApplicationType) {
       // サーバーに送信 → 戻り値を最新の正として使う
       const updated = await saveApplicationType(data);
       setApplicationType(updated);
+      return updated;
     } finally {
       setSaving(false);
     }

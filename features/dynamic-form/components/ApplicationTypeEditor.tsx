@@ -2,11 +2,10 @@
 
 import { Button, Form } from "react-bootstrap";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useApplicationType } from "../hooks/useApplicationTypes";
 import dynamic from "next/dynamic";
-import type { FormType } from "@formio/react";
-import { ApplicationType } from "../types";
+import { ApplicationType, FormDefinition } from "../types";
 import { INITIAL_FORM_SCHEMA } from "./FormEditor";
 
 const FormEditor = dynamic(() => import("./FormEditor"), {
@@ -20,32 +19,22 @@ type ApplicationTypeEditorProps = {
 export function ApplicationTypeEditor({
   applicationType: initialApplicationType,
 }: ApplicationTypeEditorProps) {
-  const applicationTypeId = initialApplicationType?.id;
-  const isNew = !applicationTypeId;
+  const isNew = !initialApplicationType;
 
   const { applicationType, submit, isSaving } = useApplicationType(
     initialApplicationType,
   );
 
   const [inputFormId, setInputFormId] = useState<string>(
-    applicationTypeId ?? "new",
+    initialApplicationType?.id ?? "new",
   );
   const [title, setTitle] = useState<string>(applicationType?.name ?? "");
   const [description, setDescription] = useState<string>(
     applicationType?.description ?? "",
   );
-  const [definition, setDefinition] = useState<FormType>(
+  const [definition, setDefinition] = useState<FormDefinition>(
     applicationType?.formDefinition ?? INITIAL_FORM_SCHEMA,
   );
-
-  // データが取得できたらセットする
-  // useEffect(() => {
-  //   if (applicationType) {
-  //     setTitle(applicationType.name);
-  //     setDescription(applicationType.description);
-  //     setDefinition(applicationType.formDefinition ?? null);
-  //   }
-  // }, [applicationType]);
 
   const handleSave = async () => {
     await submit({

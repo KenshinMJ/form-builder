@@ -1,4 +1,4 @@
-import { FormType } from "@formio/react";
+import type { FormType } from "@formio/react";
 
 export type FormDefinition = FormType;
 

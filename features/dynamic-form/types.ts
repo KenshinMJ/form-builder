@@ -1,4 +1,6 @@
-export type FormDefinition = Record<string, any>;
+import { FormType } from "@formio/react";
+
+export type FormDefinition = FormType;
 
 export type ApplicationType = {
   id: string;

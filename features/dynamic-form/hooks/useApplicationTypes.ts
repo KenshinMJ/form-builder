@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { saveApplicationType } from "../api/schemaApi";
-import { ApplicationType } from "@/types/application";
+import { ApplicationType } from "../types";
 
 export function useApplicationType(initialApplicationType?: ApplicationType) {
   const [applicationType, setApplicationType] =

@@ -1,9 +1,18 @@
 "use client";
 
-import { FormBuilder as FormioFormBuilder } from "@formio/js";
-import { FormBuilder, FormSource } from "@formio/react";
-import { useRef } from "react";
+import type { FormSource, FormType } from "@formio/react";
+import {
+  FormBuilder as FormioFormBuilder,
+  Formio,
+  Components,
+} from "@formio/js";
+import { useEffect, useRef } from "react";
+import EmpPickerComponent from "@/forms/components/EmpPickerComponent";
+import MyCustomComponent from "@/forms/components/MyCustomComponent";
 import { FormDefinition } from "../types";
+
+Components.addComponent("myCustomComponent", MyCustomComponent);
+Components.addComponent("emppicker", EmpPickerComponent);
 
 const options = {
   language: "ja",
@@ -76,13 +85,16 @@ const options = {
             input: true,
           },
         },
+        myCustomComponent: true,
+        emppicker: true,
       },
     },
     premium: false,
+    // projectId: "64a7e0f3c1b6d8e5f9a2b1c4",
   },
 } as const satisfies FormioFormBuilder["options"];
 
-const INITIAL_FORM_SCHEMA = {
+export const INITIAL_FORM_SCHEMA = {
   type: "form",
   display: "form",
   components: [],
@@ -90,8 +102,8 @@ const INITIAL_FORM_SCHEMA = {
 
 type FormEditorProps = {
   id: string;
-  definition: FormDefinition | null;
-  onChange: (v: any) => void;
+  definition: FormType | null;
+  onChange: (v: FormType) => void;
 };
 
 export default function FormEditor({
@@ -99,17 +111,49 @@ export default function FormEditor({
   definition,
   onChange,
 }: FormEditorProps) {
-  const formInstance = useRef<FormioFormBuilder>(null);
+  // const formInstance = useRef<FormioFormBuilder>(null);
 
-  const handleFormReady = (instance: FormioFormBuilder) => {
-    formInstance.current = instance;
-  };
+  // const handleFormReady = (instance: FormioFormBuilder) => {
+  //   formInstance.current = instance;
+  // };
 
-  return (
-    <FormBuilder
-      initialForm={(definition as FormSource) ?? INITIAL_FORM_SCHEMA}
-      options={options}
-      onBuilderReady={handleFormReady}
-    />
-  );
+  // return (
+  //   <FormBuilder
+  //     initialForm={definition ?? INITIAL_FORM_SCHEMA}
+  //     options={options}
+  //     onBuilderReady={handleFormReady}
+  //     onChange={onChange}
+  //   />
+  // );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let destroyed = false;
+    let builderInstance: Formio.Builder | null = null;
+
+    Formio.builder(
+      containerRef.current,
+      definition ?? INITIAL_FORM_SCHEMA,
+      options,
+    ).then((builder: Formio.Builder) => {
+      if (destroyed) {
+        builder.destroy(true);
+        return;
+      }
+      builderInstance = builder;
+      builder.on("change", (schema: FormDefinition) => {
+        onChange(schema);
+      });
+    });
+
+    return () => {
+      destroyed = true;
+      if (builderInstance) {
+        builderInstance.destroy(true);
+      }
+    };
+  }, [id]);
+
+  return <div ref={containerRef} />;
 }

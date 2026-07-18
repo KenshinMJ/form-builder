@@ -1,4 +1,4 @@
-import { ApplicationType } from "@/types/application";
+import { ApplicationType } from "../types";
 
 export async function saveApplicationType(
   data: ApplicationType,

@@ -4,9 +4,10 @@ import { Button, Form } from "react-bootstrap";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useApplicationType } from "../hooks/useApplicationTypes";
-import { FormDefinition } from "../types";
-import { ApplicationType } from "@/types/application";
 import dynamic from "next/dynamic";
+import type { FormType } from "@formio/react";
+import { ApplicationType } from "../types";
+import { INITIAL_FORM_SCHEMA } from "./FormEditor";
 
 const FormEditor = dynamic(() => import("./FormEditor"), {
   ssr: false,
@@ -33,25 +34,25 @@ export function ApplicationTypeEditor({
   const [description, setDescription] = useState<string>(
     applicationType?.description ?? "",
   );
-  const [definition, setDefinition] = useState<FormDefinition | null>(
-    applicationType?.formDefinition ?? null,
+  const [definition, setDefinition] = useState<FormType>(
+    applicationType?.formDefinition ?? INITIAL_FORM_SCHEMA,
   );
 
   // データが取得できたらセットする
-  useEffect(() => {
-    if (applicationType) {
-      setTitle(applicationType.name);
-      setDescription(applicationType.description);
-      setDefinition(applicationType.formDefinition ?? null);
-    }
-  }, [applicationType]);
+  // useEffect(() => {
+  //   if (applicationType) {
+  //     setTitle(applicationType.name);
+  //     setDescription(applicationType.description);
+  //     setDefinition(applicationType.formDefinition ?? null);
+  //   }
+  // }, [applicationType]);
 
   const handleSave = async () => {
     await submit({
       id: inputFormId,
       name: title,
       description,
-      formDefinition: definition ?? undefined,
+      formDefinition: definition,
     });
   };
 

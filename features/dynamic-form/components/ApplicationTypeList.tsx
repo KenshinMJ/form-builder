@@ -2,7 +2,7 @@
 
 import { Table, Button } from "react-bootstrap";
 import Link from "next/link";
-import { ApplicationType } from "@/types/application";
+import { ApplicationType } from "../types";
 
 type ApplicationTypeListProps = {
   applicationTypes: ApplicationType[];
